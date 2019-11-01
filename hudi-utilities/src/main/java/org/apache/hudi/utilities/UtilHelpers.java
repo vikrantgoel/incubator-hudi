@@ -34,9 +34,11 @@ import org.apache.hudi.exception.HoodieIOException;
 import org.apache.hudi.index.HoodieIndex;
 import org.apache.hudi.utilities.schema.SchemaProvider;
 import org.apache.hudi.utilities.sources.Source;
+import org.apache.hudi.utilities.sources.helpers.DFSPathSelector;
 import org.apache.hudi.utilities.transform.Transformer;
 
 import com.google.common.base.Preconditions;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -315,7 +317,7 @@ public class UtilHelpers {
     Connection conn = createConnectionFactory(options);
     String url = options.get(JDBCOptions.JDBC_URL());
     String table = options.get(JDBCOptions.JDBC_TABLE_NAME());
-    boolean tableExists = tableExists(conn,options);
+    boolean tableExists = tableExists(conn, options);
 
     if (tableExists) {
       JdbcDialect dialect = JdbcDialects.get(url);
@@ -328,11 +330,23 @@ public class UtilHelpers {
           } else {
             structType = JdbcUtils.getSchema(rs, dialect, false);
           }
-          return AvroConversionUtils.convertStructTypeToAvroSchema(structType, table, "hoodie." + table);
+          return AvroConversionUtils
+              .convertStructTypeToAvroSchema(structType, table, "hoodie." + table);
         }
       }
     } else {
       throw new HoodieException(String.format("%s table does not exists!", table));
+    }
+  }
+
+  public static DFSPathSelector createSourceSelector(String sourceSelectorClass, TypedProperties props,
+      Configuration conf) throws IOException {
+    try {
+      return (DFSPathSelector) ReflectionUtils.loadClass(sourceSelectorClass,
+          new Class<?>[]{TypedProperties.class, Configuration.class},
+          props, conf);
+    } catch (Throwable e) {
+      throw new IOException("Could not load source selector class " + sourceSelectorClass, e);
     }
   }
 }

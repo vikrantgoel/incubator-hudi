@@ -690,4 +690,8 @@ public class HoodieHiveClient {
       return new PartitionEvent(PartitionEventType.UPDATE, storagePartition);
     }
   }
+
+  public IMetaStoreClient getClient() {
+    return client;
+  }
 }

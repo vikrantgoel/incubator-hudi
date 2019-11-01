@@ -108,9 +108,9 @@ public class TestHoodieDeltaStreamer extends UtilitiesTestBase {
   @BeforeClass
   public static void initClass() throws Exception {
     UtilitiesTestBase.initClass(true);
-
     // prepare the configs.
-    UtilitiesTestBase.Helpers.copyToDFS("delta-streamer-config/base.properties", dfs, dfsBasePath + "/base.properties");
+    UtilitiesTestBase.Helpers.copyToDFS("delta-streamer-config/base.properties", dfs,
+        dfsBasePath + "/base.properties");
     UtilitiesTestBase.Helpers.copyToDFS("delta-streamer-config/sql-transformer.properties", dfs,
         dfsBasePath + "/sql-transformer.properties");
     UtilitiesTestBase.Helpers.copyToDFS("delta-streamer-config/source.avsc", dfs, dfsBasePath + "/source.avsc");
