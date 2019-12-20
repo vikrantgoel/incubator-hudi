@@ -27,7 +27,6 @@ import org.apache.hudi.exception.HoodieKeyException;
 import org.apache.avro.generic.GenericRecord;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +40,6 @@ public class ComplexKeyGenerator extends KeyGenerator {
 
   protected static final String NULL_RECORDKEY_PLACEHOLDER = "__null__";
   protected static final String EMPTY_RECORDKEY_PLACEHOLDER = "__empty__";
-
-  protected final List<String> recordKeyFields;
-
-  protected final List<String> partitionPathFields;
 
   protected final boolean hiveStylePartitioning;
 
