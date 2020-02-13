@@ -70,11 +70,11 @@ public class TestHoodieTestSuiteJob extends UtilitiesTestBase {
   public static void initClass() throws Exception {
     UtilitiesTestBase.initClass();
     // prepare the configs.
-    UtilitiesTestBase.Helpers.copyToDFS(UtilitiesTestBase.Helpers.class.getClassLoader(), "hudi-test-suite-config/base"
+    UtilitiesTestBase.Helpers.copyToDFS("hudi-test-suite-config/base"
             + ".properties", dfs, dfsBasePath + "/base.properties");
-    UtilitiesTestBase.Helpers.copyToDFS(UtilitiesTestBase.Helpers.class.getClassLoader(), "hudi-test-suite-config/source"
+    UtilitiesTestBase.Helpers.copyToDFS("hudi-test-suite-config/source"
         + ".avsc", dfs, dfsBasePath + "/source.avsc");
-    UtilitiesTestBase.Helpers.copyToDFS(UtilitiesTestBase.Helpers.class.getClassLoader(), "hudi-test-suite-config/target"
+    UtilitiesTestBase.Helpers.copyToDFS("hudi-test-suite-config/target"
         + ".avsc", dfs, dfsBasePath + "/target.avsc");
 
     TypedProperties props = new TypedProperties();
@@ -188,7 +188,7 @@ public class TestHoodieTestSuiteJob extends UtilitiesTestBase {
     cfg.targetBasePath = outputBasePath;
     cfg.inputBasePath = inputBasePath;
     cfg.targetTableName = "hoodie_trips";
-    cfg.storageType = this.tableType;
+    cfg.tableType = this.tableType;
     cfg.sourceClassName = AvroDFSSource.class.getName();
     cfg.sourceOrderingField = "timestamp";
     cfg.propsFilePath = dfsBasePath + "/test-source.properties";

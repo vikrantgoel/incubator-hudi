@@ -98,7 +98,7 @@ public class DFSHoodieDatasetInputReader extends DFSDeltaInputReader {
 
   private JavaPairRDD<String, Iterator<FileSlice>> getPartitionToFileSlice(HoodieTableMetaClient metaClient,
       List<String> partitionPaths) {
-    TableFileSystemView.RealtimeView fileSystemView = new HoodieTableFileSystemView(metaClient,
+    TableFileSystemView.SliceView fileSystemView = new HoodieTableFileSystemView(metaClient,
         metaClient.getCommitsAndCompactionTimeline().filterCompletedInstants());
     // pass num partitions to another method
     JavaPairRDD<String, Iterator<FileSlice>> partitionToFileSliceList = jsc.parallelize(partitionPaths).mapToPair(p -> {
@@ -224,8 +224,8 @@ public class DFSHoodieDatasetInputReader extends DFSDeltaInputReader {
     return partitionToFileSlice.map(f -> {
       FileSlice slice = f._2.next();
       FileSlice newSlice = new FileSlice(slice.getFileGroupId(), slice.getBaseInstantTime());
-      if (slice.getDataFile().isPresent()) {
-        newSlice.setDataFile(slice.getDataFile().get());
+      if (slice.getBaseFile().isPresent()) {
+        newSlice.setBaseFile(slice.getBaseFile().get());
       } else {
         slice.getLogFiles().forEach(l -> {
           newSlice.addLogFile(l);
@@ -236,10 +236,10 @@ public class DFSHoodieDatasetInputReader extends DFSDeltaInputReader {
   }
 
   private Iterator<IndexedRecord> readParquetOrLogFiles(FileSlice fileSlice) throws IOException {
-    if (fileSlice.getDataFile().isPresent()) {
+    if (fileSlice.getBaseFile().isPresent()) {
       Iterator<IndexedRecord> itr =
           new ParquetReaderIterator<IndexedRecord>(AvroParquetReader.<IndexedRecord>builder(new
-              Path(fileSlice.getDataFile().get().getPath())).withConf(metaClient.getHadoopConf()).build());
+              Path(fileSlice.getBaseFile().get().getPath())).withConf(metaClient.getHadoopConf()).build());
       return itr;
     } else {
       // If there is no data file, fall back to reading log files

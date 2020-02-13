@@ -48,7 +48,7 @@ public class TestUtils {
 
   public static void createAvroFiles(JavaSparkContext jsc, SparkSession sparkSession, String basePath, int numFiles,
       int numRecordsPerFile) {
-    Schema schema = HoodieTestDataGenerator.avroSchema;
+    Schema schema = HoodieTestDataGenerator.AVRO_SCHEMA;
     for (int i = 0; i < numFiles; i++) {
       JavaRDD<GenericRecord> rdd = makeRDD(jsc, numRecordsPerFile);
       AvroConversionUtils.createDataFrame(rdd.rdd(), schema.toString(), sparkSession).write()
@@ -57,7 +57,7 @@ public class TestUtils {
   }
 
   public static Schema getSchema() {
-    return HoodieTestDataGenerator.avroSchema;
+    return HoodieTestDataGenerator.AVRO_SCHEMA;
   }
 
 }
